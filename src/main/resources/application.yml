@@ -1,6 +1,12 @@
 server:
   port: 8084
 
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+
+
 spring:
   application:
     name: mssc-store21-users
@@ -12,6 +18,11 @@ spring:
   threads:
     virtual:
       enabled: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: user
+    password: password
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     database: mysql
@@ -44,16 +55,14 @@ spring:
         maintainTimeStats: false
 
 
-order:
-  openapi:
-    dev-url: http://localhost:8083
-    prod-url: https://store.factorialsystems.io
+rabbitmq:
+  queue:
+    audit:
+      name: audit-queue
+  exchange:
+    name: audit-exchange
+  routing:
+    audit:
+      key: audit-routing
 
-springdoc:
-  api-docs.path: /v3/api-docs
-
-logging:
-  level:
-    org.springframework.security: DEBUG
-    org.springframework.web: DEBUG
 

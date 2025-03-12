@@ -2,6 +2,8 @@ package io.factorialsystems.msscstore21users.dto;
 
 
 import io.factorialsystems.msscstore21users.entity.Authority;
+import io.factorialsystems.msscstore21users.security.JwtTokenWrapper;
+import io.factorialsystems.msscstore21users.security.TenantContext;
 import jakarta.validation.constraints.Null;
 import lombok.*;
 
@@ -21,6 +23,12 @@ public class AuthorityDTO {
     private String createdBy;
 
     public Authority createEntity() {
-        return Authority.builder().id(id).authority(authority).build();
+        return Authority.builder()
+                .id(id)
+                .authority(authority)
+                .disabled(false)
+                .tenantId(TenantContext.getCurrentTenant())
+                .createdBy(JwtTokenWrapper.getUserName())
+                .build();
     }
 }

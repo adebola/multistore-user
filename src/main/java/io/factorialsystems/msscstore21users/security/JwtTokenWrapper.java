@@ -27,13 +27,9 @@ public class JwtTokenWrapper {
         return claims == null ?  SYSTEM_NAME : (String) claims.get("user");
     }
 
-    public static String getUserId() {
+    public static String getTenant() {
         Map<String, Object> claims = getClaims();
-        return claims != null ? (String) claims.get("sub") : null;
+        return claims != null ? (String) claims.get("tenant") : null;
     }
 
-    public static String getEmail() {
-        Map<String, Object> claims = getClaims();
-        return claims != null ? (String) claims.get("email") : SYSTEM_EMAIL;
-    }
 }

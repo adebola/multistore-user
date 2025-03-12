@@ -4,7 +4,10 @@ import io.factorialsystems.msscstore21users.dto.AuthorityDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.type.SqlTypes;
 import org.springframework.data.annotation.CreatedBy;
 
 import java.time.Instant;
@@ -14,12 +17,17 @@ import java.util.Set;
 @Setter
 @Entity
 @Builder
+@ToString
 @Table(name = "authorities")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Authority {
     @Id
+    @UuidGenerator
+    @JdbcTypeCode(SqlTypes.VARCHAR)
     private String id;
+
+    @Column(name = "authority")
     private String authority;
 
     @Column(name = "tenant_id")
@@ -37,9 +45,10 @@ public class Authority {
     @Column(name = "created_by")
     private String createdBy;
 
-    private Boolean disabled;
+    private Boolean disabled = false;
 
     @ManyToMany(mappedBy = "authorities", fetch = FetchType.LAZY)
+    @ToString.Exclude
     private Set<User> users;
 
 
@@ -47,6 +56,7 @@ public class Authority {
         this.id = id;
         this.authority = authority;
         this.tenantId = tenantId;
+        this.disabled = false;
     }
 
     @Transient

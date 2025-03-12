@@ -9,4 +9,6 @@ public interface JpaAuthorityService {
     void editAuthority(String id, AuthorityDTO authority);
     Page<AuthorityDTO> findAllByTenant(int pageNumber, int pageSize);
     AuthorityDTO findById(String id);
+    AuthorityDTO findByIdAndTenantId(String id);
+    AuthorityDTO findByAuthorityAndTenantId(String authority);
 }
