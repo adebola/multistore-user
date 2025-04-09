@@ -3,8 +3,8 @@ package io.factorialsystems.msscstore21users.service;
 
 import io.factorialsystems.msscstore21users.dto.AuthorityDTO;
 import io.factorialsystems.msscstore21users.entity.Authority;
-import io.factorialsystems.msscstore21users.exception.BusinessEntityNotFoundException;
 import io.factorialsystems.msscstore21users.exception.BusinessEntityExistsException;
+import io.factorialsystems.msscstore21users.exception.BusinessEntityNotFoundException;
 import io.factorialsystems.msscstore21users.repository.AuthorityRepository;
 import io.factorialsystems.msscstore21users.security.TenantContext;
 import io.factorialsystems.msscstore21users.utils.PageRequestBuilder;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class JpaAuthorityServiceImpl implements JpaAuthorityService{
+public class JpaAuthorityServiceImpl implements JpaAuthorityService {
     public static final String CREATE_AUTHORITY = "Create-Authority";
     public static final String EDIT_AUTHORITY = "Edit-Authority";
 
@@ -66,6 +66,7 @@ public class JpaAuthorityServiceImpl implements JpaAuthorityService{
 
         authorityRepository.findByIdAndTenantId(id, tenantId).ifPresentOrElse((value) -> {
            value.setAuthority(authority.getAuthority());
+           value.setDescription(authority.getDescription());
 
             log.info("Modifying UserAuthority {}", authority);
             authorityRepository.save(value);
@@ -85,10 +86,7 @@ public class JpaAuthorityServiceImpl implements JpaAuthorityService{
             throw new IllegalStateException("No Store found");
         }
 
-        log.info("Retrieving List of Roles By for Tenant {}", tenantId);
-        Pageable pageable = PageRequestBuilder.build(pageNumber, pageSize);
-        final Page<Authority> authorityPage = authorityRepository.findAllByTenantId(tenantId, pageable);
-        return authorityPage.map(Authority::toDTO);
+        return localFindByTenantId(pageNumber, pageSize, tenantId);
     }
 
     @Override
@@ -122,5 +120,31 @@ public class JpaAuthorityServiceImpl implements JpaAuthorityService{
         return authorityRepository
                 .findByAuthorityAndTenantId(authority, tenantId)
                 .map(Authority::toDTO).orElseThrow(() -> new BusinessEntityNotFoundException(String.format("Role with name %s not found", authority)));
+    }
+
+    @Override
+    public Page<AuthorityDTO> findByTenantId(Integer pageNumber, Integer pageSize, String id) {
+        return localFindByTenantId(pageNumber, pageSize, id);
+    }
+
+    @Override
+    public Page<AuthorityDTO> search(Integer pageNumber, Integer pageSize, String search) {
+        final String tenantId = TenantContext.getCurrentTenant();
+
+        if (tenantId == null) {
+            throw new IllegalStateException("No Store found");
+        }
+
+        log.info("Searching Authority by {}", search);
+        Pageable pageable = PageRequestBuilder.build(pageNumber, pageSize);
+        final Page<Authority> authorityPage = authorityRepository.findByAuthorityContainingAndTenantId(search, tenantId, pageable);
+        return authorityPage.map(Authority::toDTO);
+    }
+
+    private Page<AuthorityDTO> localFindByTenantId(Integer pageNumber, Integer pageSize, String id) {
+        log.info("Retrieving List of Roles for Tenant {}", id);
+        Pageable pageable = PageRequestBuilder.build(pageNumber, pageSize);
+        final Page<Authority> authorityPage = authorityRepository.findByTenantId(id, pageable);
+        return authorityPage.map(Authority::toDTO);
     }
 }

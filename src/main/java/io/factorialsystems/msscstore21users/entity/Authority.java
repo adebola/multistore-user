@@ -45,18 +45,22 @@ public class Authority {
     @Column(name = "created_by")
     private String createdBy;
 
-    private Boolean disabled = false;
+    @Column(name = "description")
+    private String description;
+
+    private Boolean disabled = (Boolean) false;
 
     @ManyToMany(mappedBy = "authorities", fetch = FetchType.LAZY)
     @ToString.Exclude
     private Set<User> users;
 
 
-    public Authority(String id, String authority, String tenantId) {
+    public Authority(String id, String authority, String tenantId, String description) {
         this.id = id;
         this.authority = authority;
         this.tenantId = tenantId;
-        this.disabled = false;
+        this.disabled = (Boolean) false;
+        this.description = description;
     }
 
     @Transient
@@ -64,6 +68,9 @@ public class Authority {
         return AuthorityDTO.builder()
                 .id(id)
                 .authority(authority)
+                .createdAt(createdAt)
+                .createdBy(createdBy)
+                .description(description)
                 .build();
     }
 }

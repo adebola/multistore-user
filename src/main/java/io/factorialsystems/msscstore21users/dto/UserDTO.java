@@ -20,6 +20,7 @@ public class UserDTO {
     private String lastName;
     private Instant createdOn;
     private String email;
+    private String avatarImageUrl;
     private Set<AuthorityDTO> authorities;
 
     public User toEntity() {

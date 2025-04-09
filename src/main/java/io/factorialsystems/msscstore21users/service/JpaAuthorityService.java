@@ -11,4 +11,6 @@ public interface JpaAuthorityService {
     AuthorityDTO findById(String id);
     AuthorityDTO findByIdAndTenantId(String id);
     AuthorityDTO findByAuthorityAndTenantId(String authority);
+    Page<AuthorityDTO> findByTenantId(Integer pageNumber, Integer pageSize, String id);
+    Page<AuthorityDTO> search(Integer pageNumber, Integer pageSize, String search);
 }

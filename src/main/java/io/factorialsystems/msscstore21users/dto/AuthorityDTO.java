@@ -21,14 +21,16 @@ public class AuthorityDTO {
     private String authority;
     private Instant createdAt;
     private String createdBy;
+    private String description;
 
     public Authority createEntity() {
         return Authority.builder()
                 .id(id)
                 .authority(authority)
-                .disabled(false)
+                .disabled(Boolean.FALSE)
                 .tenantId(TenantContext.getCurrentTenant())
-                .createdBy(JwtTokenWrapper.getUserName())
+                .createdBy(JwtTokenWrapper.getUserId())
+                .description(description)
                 .build();
     }
 }

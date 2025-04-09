@@ -22,12 +22,12 @@ public class JwtTokenWrapper {
 
     public static String getUserName() {
         Map<String, Object> claims = getClaims();
-        return claims != null ? (String) claims.get("name") : SYSTEM_NAME;
+        return claims != null ? (String) claims.get("sub") : SYSTEM_NAME;
     }
 
     public static String getUserId() {
         Map<String, Object> claims = getClaims();
-        return claims != null ? (String) claims.get("sub") : null;
+        return claims != null ? (String) claims.get("id") : null;
     }
 
     public static String getEmail() {

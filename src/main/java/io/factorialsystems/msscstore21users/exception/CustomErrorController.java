@@ -3,6 +3,7 @@ package io.factorialsystems.msscstore21users.exception;
 
 import io.factorialsystems.msscstore21users.dto.ErrorResponseDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -46,9 +47,9 @@ public class CustomErrorController extends ResponseEntityExceptionHandler {
         );
     }
 
-    @ExceptionHandler(BusinessEntityExistsException.class)
-    ResponseEntity<ErrorResponseDTO> handleAlreadyExistsException(BusinessEntityExistsException bee, WebRequest webRequest) {
-        final String message = String.format("caused by %s", bee.getMessage());
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    ResponseEntity<ErrorResponseDTO> handleDataIntegrityViolationException(DataIntegrityViolationException dive, WebRequest webRequest) {
+        final String message = String.format("caused by %s", dive.getMessage());
         log.error(message);
 
         return ResponseEntity.badRequest().body(

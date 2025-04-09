@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.time.Instant;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -37,6 +38,9 @@ public class User {
     private String password;
     private String email;
 
+    @Column(name = "avatar_image_url")
+    private String avatarImageUrl;
+
     @Column(name = "tenant_id")
     private String tenantId;
 
@@ -56,6 +60,7 @@ public class User {
                 .lastName(lastName)
                 .createdOn(createdOn)
                 .email(email)
+                .avatarImageUrl(avatarImageUrl)
                 .build();
     }
 
@@ -68,11 +73,11 @@ public class User {
                 .lastName(lastName)
                 .createdOn(createdOn)
                 .email(email)
+                .avatarImageUrl(avatarImageUrl)
                 .authorities(
                         authorities.stream()
                                 .map(Authority::toDTO)
-                                .collect(java.util.stream.Collectors.toSet())
-                )
-                .build();
+                                .collect(Collectors.toSet())
+                ).build();
     }
 }

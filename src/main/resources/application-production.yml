@@ -1,11 +1,6 @@
 server:
   port: 8084
 
-logging:
-  level:
-    org.springframework.security: DEBUG
-    org.springframework.web: DEBUG
-
 spring:
   application:
     name: mssc-store21-users
@@ -13,17 +8,17 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:9000/auth
+          issuer-uri: to-be-set
   threads:
     virtual:
       enabled: true
   rabbitmq:
-    host: localhost
+    host: to-be-set
     port: 5672
     username: user
     password: password
   jpa:
-    database-platform: org.hibernate.dialect.MySQL8Dialect
+    database-platform: org.hibernate.dialect.MySQLDialect
     database: mysql
     show-sql: true
     hibernate:
@@ -34,9 +29,9 @@ spring:
         format_sql: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/store_authorization_db?useSSL=false&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
-    username: root
-    password: password
+    url: to-be-set
+    username: to-be-set
+    password: to-be-set
     hikari:
       auto-commit: true
       pool-name: order-pool

@@ -6,6 +6,7 @@ import io.factorialsystems.msscstore21users.dto.TenantResponseDTO;
 import io.factorialsystems.msscstore21users.dto.TenantUpdateRequestDTO;
 import io.factorialsystems.msscstore21users.entity.Tenant;
 import io.factorialsystems.msscstore21users.repository.TenantRepository;
+import io.factorialsystems.msscstore21users.utils.JwtTokenWrapper;
 import io.factorialsystems.msscstore21users.utils.PageRequestBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +24,10 @@ public class JpaTenantServiceImpl implements JpaTenantService{
 
     @Override
     public void save(TenantCreateRequestDTO tenant) {
-        log.info("Saving tenant: {}", tenant);
+        log.info("Saving tenant: {} by {}", tenant, JwtTokenWrapper.getUserName());
 
         Tenant t = tenant.toEntity();
+        t.setCreatedBy(JwtTokenWrapper.getUserName());
         t.setSecret(bCryptPasswordEncoder.encode(tenant.getSecret()));
         tenantRepository.save(t);
     }
@@ -35,21 +37,15 @@ public class JpaTenantServiceImpl implements JpaTenantService{
         log.info("Updating tenant: {}", tenant);
 
         Tenant t = tenantRepository.findById(id).orElseThrow(() -> new RuntimeException(String.format("Tenant with id %s not found", id)));
-        Tenant newTenant = Tenant.builder()
-                .name(tenant.getName())
-                .description(tenant.getDescription())
-                .disabled(tenant.getDisabled())
-                .createdBy(t.getCreatedBy())
-                .createdAt(t.getCreatedAt())
-                .build();
+        t.setDescription(tenant.getDescription());
+        t.setDisabled(tenant.getDisabled());
+        t.setName(tenant.getName());
 
-        if (tenant.getSecret() == null || tenant.getSecret().isEmpty()) {
-            newTenant.setSecret(t.getSecret());
-        } else {
-           newTenant.setSecret(bCryptPasswordEncoder.encode(tenant.getSecret()));
+        if (tenant.getSecret() != null && !tenant.getSecret().isEmpty()) {
+            t.setSecret(bCryptPasswordEncoder.encode(tenant.getSecret()));
         }
 
-        tenantRepository.save(newTenant);
+        tenantRepository.save(t);
     }
 
     @Override
